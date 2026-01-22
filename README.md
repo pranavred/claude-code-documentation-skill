@@ -23,23 +23,28 @@ This is a **Claude Code skill** - a reusable set of instructions that teaches Cl
 
 ### Installation
 
-1. **Clone this repository** to your machine:
+**Option 1: npx (Recommended)**
 
 ```bash
+npx documentation-skills
+```
+
+This will prompt you to install the skill either globally or locally:
+- **Global** (`~/.claude/skills/`) - Available in all your projects
+- **Local** (`./.claude/skills/`) - Available only in the current project
+
+**Option 2: Manual Installation**
+
+```bash
+# Clone the repository
 git clone https://github.com/pranavred/claude-code-documentation-skill.git
+
+# Copy to global skills directory
+cp -r claude-code-documentation-skill/skills/docs-with-mermaid ~/.claude/skills/
+
+# OR copy to a specific project
+cp -r claude-code-documentation-skill/skills/docs-with-mermaid /your/project/.claude/skills/
 ```
-
-2. **Copy the skill** to your Claude Code skills directory:
-
-```bash
-# For personal skills (available in all projects)
-cp -r claude-code-documentation-skill/.claude/skills/docs-with-mermaid ~/.claude/skills/
-
-# OR for project-specific skills
-cp -r claude-code-documentation-skill/.claude/skills/docs-with-mermaid /your/project/.claude/skills/
-```
-
-3. **Start using it** by invoking `/docs-with-mermaid` in Claude Code or simply asking Claude to create documentation.
 
 ### Usage
 
@@ -61,7 +66,7 @@ Once installed, you can:
 ## What's Included
 
 ```
-.claude/skills/docs-with-mermaid/
+skills/docs-with-mermaid/
 ├── SKILL.md              # Main skill instructions
 ├── mermaid-reference.md  # Complete Mermaid syntax reference
 └── examples.md           # Practical documentation examples

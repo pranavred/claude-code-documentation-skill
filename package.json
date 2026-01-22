@@ -1,0 +1,33 @@
+{
+  "name": "documentation-skills",
+  "version": "1.0.0",
+  "description": "Claude Code skill for technical documentation with Mermaid diagrams",
+  "type": "module",
+  "bin": {
+    "documentation-skills": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "skills"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "mermaid",
+    "documentation",
+    "diagrams",
+    "skill"
+  ],
+  "author": "Pranav",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pranavred/claude-code-documentation-skill.git"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
