@@ -1,204 +1,156 @@
-# Technical Documentation with Mermaid Diagrams - Claude Code Skill
+# documentation-skills
 
-A Claude Code skill that enables you to create excellent technical documentation enhanced with Mermaid diagrams. Transform complex systems into clear, visual documentation that anyone can understand.
+A Claude Code skill that transforms walls of text into clear, visual documentation with Mermaid diagrams.
 
-## What is This?
-
-This is a **Claude Code skill** - a reusable set of instructions that teaches Claude how to create outstanding technical documentation using Mermaid diagrams. When you install this skill, Claude gains expertise in:
-
-- Choosing the right diagram type for any documentation need
-- Creating clear, well-structured technical documentation
-- Using Mermaid syntax correctly for 15+ diagram types
-- Following documentation best practices
-
-## Features
-
-- **15+ Mermaid Diagram Types**: Flowcharts, sequence diagrams, class diagrams, ER diagrams, state machines, C4 architecture diagrams, and more
-- **Documentation Templates**: Pre-built patterns for READMEs, API docs, architecture docs, and onboarding guides
-- **Best Practices**: Guidelines for creating maintainable, readable documentation
-- **Comprehensive Reference**: Complete Mermaid syntax guide included
-- **Practical Examples**: Real-world documentation examples you can adapt
-
-## Quick Start
-
-### Installation
-
-**Option 1: npx (Recommended)**
+## Install
 
 ```bash
 npx documentation-skills
 ```
 
-This will prompt you to install the skill either globally or locally:
-- **Global** (`~/.claude/skills/`) - Available in all your projects
-- **Local** (`./.claude/skills/`) - Available only in the current project
+## Before & After
 
-**Option 2: Manual Installation**
+### Without the Skill
 
-```bash
-# Clone the repository
-git clone https://github.com/pranavred/claude-code-documentation-skill.git
+You ask Claude to document your authentication system:
 
-# Copy to global skills directory
-cp -r claude-code-documentation-skill/skills/docs-with-mermaid ~/.claude/skills/
+**Authentication System**
 
-# OR copy to a specific project
-cp -r claude-code-documentation-skill/skills/docs-with-mermaid /your/project/.claude/skills/
-```
+- User submits login credentials to the frontend
+- Frontend sends credentials to the Auth Service
+- Auth Service validates against the database
+- If valid, Auth Service generates a JWT token and returns it
+- Frontend stores the token in local storage
+- For subsequent requests, frontend includes token in Authorization header
+- API Gateway extracts and validates the token
+- If valid, request is forwarded to backend with user context
+- If invalid/expired, returns 401 Unauthorized
 
-### Usage
+**Result:** Correct information, but requires mental effort to visualize the flow.
 
-Once installed, you can:
+---
 
-**Invoke directly:**
-```
-/docs-with-mermaid my authentication system
-```
+### With the Skill
 
-**Or just ask Claude naturally:**
-```
-"Document the API flow for user registration"
-"Create a README for this repository"
-"Explain the architecture of this codebase"
-"Draw a diagram showing how the order service works"
-```
+The same request produces:
 
-## What's Included
-
-```
-skills/docs-with-mermaid/
-├── SKILL.md              # Main skill instructions
-├── mermaid-reference.md  # Complete Mermaid syntax reference
-└── examples.md           # Practical documentation examples
-```
-
-### SKILL.md
-
-The core skill file that teaches Claude:
-- When to use each diagram type
-- Documentation structure templates
-- Diagram creation guidelines
-- Quality checklist for documentation
-
-### mermaid-reference.md
-
-Comprehensive reference covering:
-- All 15+ Mermaid diagram types
-- Complete syntax for each diagram
-- Styling and customization options
-- Troubleshooting tips
-
-### examples.md
-
-15 practical examples including:
-- API request flow documentation
-- System architecture overviews
-- Database schema documentation
-- CI/CD pipeline documentation
-- Authentication flow diagrams
-- And much more...
-
-## Supported Diagram Types
-
-| Diagram | Best For |
-|---------|----------|
-| **Flowchart** | Processes, decisions, algorithms |
-| **Sequence** | API calls, service interactions |
-| **Class** | Object-oriented design |
-| **State** | Lifecycle, state machines |
-| **ER** | Database schemas |
-| **C4 Context** | High-level architecture |
-| **C4 Container** | Application architecture |
-| **C4 Component** | Component internals |
-| **User Journey** | UX documentation |
-| **Gantt** | Project timelines |
-| **Pie Chart** | Proportions |
-| **Mindmap** | Hierarchical concepts |
-| **Timeline** | Historical events |
-| **Git Graph** | Branching strategies |
-| **Quadrant** | Prioritization matrices |
-
-## Example Output
-
-When you ask Claude to document an authentication flow, you might get:
-
-````markdown
 ## Authentication Flow
 
-The authentication system uses JWT tokens with OAuth2 for secure access.
+The system uses JWT tokens for stateless authentication with the following flow:
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant User
-    participant App
-    participant Auth
-    participant API
+    participant Frontend
+    participant Gateway as API Gateway
+    participant Auth as Auth Service
+    participant API as Backend API
 
-    User->>App: Login Request
-    App->>Auth: Authenticate
+    User->>Frontend: Enter credentials
+    Frontend->>Auth: POST /login
 
     alt Valid Credentials
-        Auth-->>App: JWT Token
-        App-->>User: Success
-        User->>App: API Request
-        App->>API: Request + JWT
-        API-->>App: Protected Data
-    else Invalid
-        Auth-->>App: Error
-        App-->>User: Login Failed
+        Auth->>Auth: Validate & generate JWT
+        Auth-->>Frontend: 200 OK + JWT Token
+        Frontend->>Frontend: Store token
+
+        User->>Frontend: Request data
+        Frontend->>Gateway: GET /api/data (+ JWT)
+        Gateway->>Auth: Validate token
+        Auth-->>Gateway: Token valid + user context
+        Gateway->>API: Forward request
+        API-->>Gateway: Response
+        Gateway-->>Frontend: 200 OK + data
+        Frontend-->>User: Display data
+
+    else Invalid Credentials
+        Auth-->>Frontend: 401 Unauthorized
+        Frontend-->>User: Show error
     end
 ```
 
-The flow begins when a user submits credentials...
-````
+### Key Components
 
-## Platform Compatibility
+| Component | Responsibility |
+|-----------|----------------|
+| **Frontend** | Stores JWT, attaches to requests |
+| **API Gateway** | Validates tokens, routes requests |
+| **Auth Service** | Issues tokens, validates credentials |
+| **Backend API** | Processes authenticated requests |
 
-Mermaid diagrams render natively in:
+### Token Lifecycle
 
-| Platform | Support |
-|----------|---------|
-| GitHub | Markdown files, comments, READMEs |
-| GitLab | Markdown files, wikis |
-| Notion | Code blocks (`mermaid` language) |
-| Obsidian | Native support |
-| VS Code | Markdown Preview Enhanced extension |
-| Confluence | Mermaid plugin |
-| Docusaurus | Native support |
-| MkDocs | mermaid2 plugin |
-
-## Customization
-
-### Adjusting the Skill
-
-You can modify `SKILL.md` to:
-- Add company-specific documentation standards
-- Include custom diagram templates
-- Adjust the documentation structure
-
-### Adding Examples
-
-Add your own examples to `examples.md` for domain-specific patterns.
-
-## Contributing
-
-Contributions are welcome! Feel free to:
-- Add new diagram examples
-- Improve documentation templates
-- Fix syntax errors
-- Add support for new Mermaid features
-
-## Resources
-
-- [Mermaid Official Documentation](https://mermaid.js.org/)
-- [Mermaid Live Editor](https://mermaid.live/) - Test your diagrams
-- [Claude Code Documentation](https://docs.anthropic.com/claude-code)
-
-## License
-
-MIT License - See [LICENSE](LICENSE) for details.
+```mermaid
+stateDiagram-v2
+    [*] --> Valid: Token issued
+    Valid --> Valid: API request (within expiry)
+    Valid --> Expired: Time passes
+    Expired --> Valid: Refresh token
+    Expired --> [*]: User logs out
+    Valid --> [*]: User logs out
+```
 
 ---
 
-**Transform your documentation from walls of text into clear, visual guides that everyone can understand.**
+**Result:** Visual flow that anyone can understand in seconds.
+
+## What This Skill Does
+
+When installed, Claude learns to:
+
+1. **Choose the right diagram** - Sequence diagrams for API flows, ER diagrams for databases, flowcharts for processes
+2. **Structure documentation** - Overview first, then details, with diagrams at each level
+3. **Write diagram-friendly prose** - Text that complements visuals, not duplicates them
+4. **Use correct Mermaid syntax** - 15+ diagram types with proper formatting
+
+## Supported Diagrams
+
+| Type | Use Case |
+|------|----------|
+| Sequence | API calls, service interactions |
+| Flowchart | Processes, decision trees |
+| Class | Object-oriented design |
+| ER | Database schemas |
+| State | Lifecycles, workflows |
+| C4 | Architecture (Context/Container/Component) |
+| Gantt | Project timelines |
+| Mindmap | Concept hierarchies |
+
+## Usage
+
+After installation, invoke directly:
+
+```
+/docs-with-mermaid [topic]
+```
+
+Or ask naturally:
+
+```
+"Document the payment processing flow"
+"Create an architecture diagram for this service"
+"Explain how the caching layer works"
+```
+
+## Manual Installation
+
+```bash
+git clone https://github.com/pranavred/claude-code-documentation-skill.git
+cp -r claude-code-documentation-skill/skills/docs-with-mermaid ~/.claude/skills/
+```
+
+## Platform Support
+
+Mermaid renders natively on: GitHub, GitLab, Notion, Obsidian, VS Code (with extension), Docusaurus, MkDocs
+
+## Contributing
+
+Open source - contributions welcome:
+- Add diagram examples
+- Improve templates
+- Fix syntax issues
+
+## License
+
+MIT
